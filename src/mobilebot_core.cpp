@@ -375,15 +375,15 @@ ros::Time rosNow()
 /*******************************************************************************
 * Time Interpolation function (deprecated)
 *******************************************************************************/
-// ros::Time addMicros(ros::Time & t, uint32_t _micros)
-// {
-//   uint32_t sec, nsec;
+ros::Time addMicros(ros::Time & t, uint32_t _micros)
+{
+  uint32_t sec, nsec;
 
-//   sec  = _micros / 1000 + t.sec;
-//   nsec = _micros % 1000000000 + t.nsec;
+  sec  = _micros / 1000 + t.sec;
+  nsec = _micros % 1000000000 + t.nsec;
 
-//   return ros::Time(sec, nsec);
-// }
+  return ros::Time(sec, nsec);
+}
 
 /*******************************************************************************
 * Send log message
@@ -494,7 +494,7 @@ int main(int argc, char **argv)
     /*******************************************************************************
     * Subscriber
     *******************************************************************************/
-    ros::Subscriber cmd_vel_sub = nh.subscribe("cmd_vel",1000,commandVelocityCallback);
+    ros::Subscriber cmd_vel_sub = nh.subscribe("cmd_vel",1000,commandVelocityCallback); // OK
     ros::Subscriber reset_sub = nh.subscribe("reset", 1000, resetCallback);
     ros::Subscriber imu_sub = nh.subscribe("imu", 1000, imuCallback); 
 
@@ -505,7 +505,7 @@ int main(int argc, char **argv)
     ros::Publisher sensor_state_pub = nh.advertise<turtlebot3_msgs::SensorState>("sensor_state", 1000);
 
     // Version information of Turtlebot3
-    ros::Publisher version_info_pub = nh.advertise<turtlebot3_msgs::VersionInfo>("firmware_version", 1000);
+    ros::Publisher version_info_pub = nh.advertise<turtlebot3_msgs::VersionInfo>("firmware_version", 1000); //OK
 
     // Odometry of Turtlebot3
     ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1000);
