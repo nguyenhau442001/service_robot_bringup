@@ -29,7 +29,7 @@
 #define ENCODER_MAX                      50000             // raw
 #define RPM_MAX                          300               // 3000/10
 
-#define MAX_LINEAR_VELOCITY              (WHEEL_RADIUS * 2 * 3.14159265359 * RPM_MAX / 60) // m/s  (BURGER : 61[rpm], WAFFLE : 77[rpm])
+#define MAX_LINEAR_VELOCITY              (WHEEL_RADIUS * 2 * 3.14159265359 * RPM_MAX / 60) // m/s  
 #define MAX_ANGULAR_VELOCITY             (MAX_LINEAR_VELOCITY / TURNING_RADIUS)       // rad/s
 
 #define MIN_LINEAR_VELOCITY              -MAX_LINEAR_VELOCITY  

@@ -124,7 +124,7 @@ sensor_msgs::JointState joint_states;
 * Transform Broadcaster
 *******************************************************************************/
 geometry_msgs::TransformStamped odom_tf;
-// tf::TransformBroadcaster tf_broadcaster; // Due to this one make can not connect
+
 
 /*******************************************************************************
 * SoftwareTimer of Turtlebot3

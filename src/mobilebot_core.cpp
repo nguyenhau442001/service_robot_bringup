@@ -200,38 +200,38 @@ void updateJointStates(void)
 /*******************************************************************************
 * Update the odometry
 *******************************************************************************/
-// void updateOdometry(void)
-// {
-//   odom.header.frame_id = odom_header_frame_id;
-//   odom.child_frame_id  = odom_child_frame_id;
+void updateOdometry(void)
+{
+  odom.header.frame_id = odom_header_frame_id;
+  odom.child_frame_id  = odom_child_frame_id;
 
-//   odom.pose.pose.position.x = odom_pose[0];
-//   odom.pose.pose.position.y = odom_pose[1];
-//   odom.pose.pose.position.z = 0;
+  odom.pose.pose.position.x = odom_pose[0];
+  odom.pose.pose.position.y = odom_pose[1];
+  odom.pose.pose.position.z = 0;
 
-//   tf::Quaternion odom_quat = tf::createQuaternionFromYaw(odom_pose[2]);
-//   geometry_msgs::Quaternion orientation;
-//   tf::quaternionTFToMsg(odom_quat, orientation);
-//   odom.pose.pose.orientation = orientation;
+  tf::Quaternion odom_quat = tf::createQuaternionFromYaw(odom_pose[2]);
+  geometry_msgs::Quaternion orientation;
+  tf::quaternionTFToMsg(odom_quat, orientation);
+  odom.pose.pose.orientation = orientation;
 
-//   odom.twist.twist.linear.x  = odom_vel[0];
-//   odom.twist.twist.angular.z = odom_vel[2];
-// }
+  odom.twist.twist.linear.x  = odom_vel[0];
+  odom.twist.twist.angular.z = odom_vel[2];
+}
 
 
 
 /*******************************************************************************
 * CalcUpdateulate the TF
 *******************************************************************************/
-// void updateTF(geometry_msgs::TransformStamped& odom_tf)
-// {
-//   odom_tf.header = odom.header;
-//   odom_tf.child_frame_id = odom.child_frame_id;
-//   odom_tf.transform.translation.x = odom.pose.pose.position.x;
-//   odom_tf.transform.translation.y = odom.pose.pose.position.y;
-//   odom_tf.transform.translation.z = odom.pose.pose.position.z;
-//   odom_tf.transform.rotation      = odom.pose.pose.orientation;
-// }
+void updateTF(geometry_msgs::TransformStamped& odom_tf)
+{
+  odom_tf.header = odom.header;
+  odom_tf.child_frame_id = odom.child_frame_id;
+  odom_tf.transform.translation.x = odom.pose.pose.position.x;
+  odom_tf.transform.translation.y = odom.pose.pose.position.y;
+  odom_tf.transform.translation.z = odom.pose.pose.position.z;
+  odom_tf.transform.rotation      = odom.pose.pose.orientation;
+}
 
 /*******************************************************************************
 * Update motor information
@@ -420,44 +420,45 @@ void sendLogMsg(void)
 /*******************************************************************************
 * Initialization odometry data
 *******************************************************************************/
-// void initOdom(void)
-// {
-//   init_encoder = true;
+void initOdom(void)
+{
+  init_encoder = true;
 
-//   for (int index = 0; index < 3; index++)
-//   {
-//     odom_pose[index] = 0.0;
-//     odom_vel[index]  = 0.0;
-//   }
+  for (int index = 0; index < 3; index++)
+  {
+    odom_pose[index] = 0.0;
+    odom_vel[index]  = 0.0;
+  }
 
-//   odom.pose.pose.position.x = 0.0;
-//   odom.pose.pose.position.y = 0.0;
-//   odom.pose.pose.position.z = 0.0;
+  odom.pose.pose.position.x = 0.0;
+  odom.pose.pose.position.y = 0.0;
+  odom.pose.pose.position.z = 0.0;
 
-//   odom.pose.pose.orientation.x = 0.0;
-//   odom.pose.pose.orientation.y = 0.0;
-//   odom.pose.pose.orientation.z = 0.0;
-//   odom.pose.pose.orientation.w = 0.0;
+  odom.pose.pose.orientation.x = 0.0;
+  odom.pose.pose.orientation.y = 0.0;
+  odom.pose.pose.orientation.z = 0.0;
+  odom.pose.pose.orientation.w = 0.0;
 
-//   odom.twist.twist.linear.x  = 0.0;
-//   odom.twist.twist.angular.z = 0.0;
-// }
+  odom.twist.twist.linear.x  = 0.0;
+  odom.twist.twist.angular.z = 0.0;
+}
 
 /*******************************************************************************
 * Initialization joint states data
 *******************************************************************************/
-// void initJointStates(void)
-// {
-//   static char *joint_states_name[] = {(char*)"wheel_left_joint", (char*)"wheel_right_joint"};
+void initJointStates(void)
+{
+  joint_states.header.frame_id = joint_state_header_frame_id;
 
-//   joint_states.header.frame_id = joint_state_header_frame_id;
-//   joint_states.name            = joint_states_name;
+  static const char* joint_states_name[] = {"wheel_left_joint", "wheel_right_joint"};
+  std::vector<std::string> joint_names(joint_states_name, joint_states_name + sizeof(joint_states_name) / sizeof(joint_states_name[0]));
+  joint_states.name = joint_names;
 
-//   joint_states.name_length     = WHEEL_NUM;
-//   joint_states.position_length = WHEEL_NUM;
-//   joint_states.velocity_length = WHEEL_NUM;
-//   joint_states.effort_length   = WHEEL_NUM;
-// }
+  joint_states.name.resize(WHEEL_NUM);
+  joint_states.position.resize(WHEEL_NUM);
+  joint_states.velocity.resize(WHEEL_NUM);
+  joint_states.effort.resize(WHEEL_NUM);
+}
 
 /*******************************************************************************
 * Update Goal Velocity
@@ -510,12 +511,12 @@ int main(int argc, char **argv)
     // Odometry of Turtlebot3
     ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1000);
 
-    // // Joint(Dynamixel) state of Turtlebot3
+    // Joint(Dynamixel) state of Turtlebot3
     ros::Publisher joint_states_pub = nh.advertise<sensor_msgs::JointState>("joint_states", 1000);
 
-    // ros::Rate loop_rate(10); // The parameter in looprate is frequency (Hz)
-    int count = 0;  
+    ros::Publisher tf_pub = nh.advertise<tf::tfMessage>("/tf", 1000);
 
+    // ros::Rate loop_rate(10); // The parameter in looprate is frequency (Hz)
 
     while (ros::ok())
     {
