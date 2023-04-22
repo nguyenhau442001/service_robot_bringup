@@ -11,6 +11,7 @@
 
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
+#include "tf/tfMessage.h"
 
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/Quaternion.h>
@@ -106,8 +107,8 @@ uint32_t current_offset;
 char get_prefix[10];
 char* get_tf_prefix = get_prefix;
 
-char odom_header_frame_id[30];
-char odom_child_frame_id[30];
+char odom_header_frame_id[50];
+char odom_child_frame_id[50];
 
 char imu_frame_id[30];
 char mag_frame_id[30];
@@ -124,7 +125,6 @@ sensor_msgs::JointState joint_states;
 * Transform Broadcaster
 *******************************************************************************/
 geometry_msgs::TransformStamped odom_tf;
-
 
 /*******************************************************************************
 * SoftwareTimer of Turtlebot3
@@ -175,9 +175,4 @@ unsigned long prev_update_time;
 float odom_pose[3];
 double odom_vel[3];
 
-/*******************************************************************************
-* Declaration for Battery
-*******************************************************************************/
-bool setup_end        = false;
-uint8_t battery_state = 0;
 
