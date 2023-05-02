@@ -12,6 +12,8 @@
   <!-- </include> -->
 
    <!--  <node pkg="turtlebot3_bringup" type="my_chatter" name="my_chatter" output="screen"/>  -->
-  <node pkg="service_robot_bringup" type="service_robot_bringup" name="service_robot_bringup" output="screen"/>
+
+
+  
     
 </launch>

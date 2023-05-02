@@ -24,7 +24,6 @@
 #include <turtlebot3_msgs/SensorState.h>
 #include <turtlebot3_msgs/VersionInfo.h>
 
-
 #include <sstream>
 
 #include <cstdlib>
@@ -35,6 +34,9 @@
 #include <mutex>
 
 #include "mobilebot_core.h"        // Declare kinetic/dynamic of robot 
+
+// #include "AGV_sensor.h"            // Declare AGV sensor (only IMU was used)
+
 #define FIRMWARE_VER "1.2.6"
 
 #define CONTROL_MOTOR_SPEED_FREQUENCY          30   //hz

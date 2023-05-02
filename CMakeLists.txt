@@ -124,6 +124,12 @@ include_directories(
 add_executable(service_robot_bringup src/mobilebot_core.cpp)
 target_link_libraries(service_robot_bringup ${catkin_LIBRARIES})
 add_dependencies(service_robot_bringup ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+# Bringup control motor
+add_executable(publish_path src/publish_path.cpp)
+target_link_libraries(publish_path ${catkin_LIBRARIES})
+add_dependencies(publish_path ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/service_robot_bringup.cpp
