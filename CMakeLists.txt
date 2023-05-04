@@ -130,6 +130,11 @@ add_executable(publish_path src/publish_path.cpp)
 target_link_libraries(publish_path ${catkin_LIBRARIES})
 add_dependencies(publish_path ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+# Bringup control motor
+add_executable(converted_odom src/converted_odom.cpp)
+target_link_libraries(converted_odom ${catkin_LIBRARIES})
+add_dependencies(converted_odom ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/service_robot_bringup.cpp

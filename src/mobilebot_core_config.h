@@ -119,10 +119,9 @@ char joint_state_header_frame_id[30];
 
 // // Messages
 turtlebot3_msgs::SensorState sensor_state_msg;
-turtlebot3_msgs::VersionInfo version_info_msg;
 nav_msgs::Odometry odom;
 sensor_msgs::JointState joint_states;
-
+sensor_msgs::Imu callBack_Imu;
 /*******************************************************************************
 * Transform Broadcaster
 *******************************************************************************/

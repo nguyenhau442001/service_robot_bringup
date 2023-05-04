@@ -30,6 +30,15 @@ void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
   tTime[6] = millis();
 }
 
+float getYaw(float x, float y, float z, float w) {
+  // Convert quaternion to Euler angles
+  float yaw = atan2(2*(w*z + x*y), 1 - 2*(y*y + z*z));
+
+  // Convert yaw angle to degrees
+  yaw = yaw * 180.0 / M_PI;
+  return yaw;
+}
+
 void loginfo(const std::string& message)
 {
    ROS_INFO("%s",message.c_str());
@@ -37,7 +46,8 @@ void loginfo(const std::string& message)
 
 void imuCallback(const sensor_msgs::Imu& imu_msg)
 {
-  // maybe not use
+  // Store the received IMU message into the global variable
+  callBack_Imu = imu_msg;
 }
 /*******************************************************************************
 * Callback function for reset msg
@@ -82,16 +92,6 @@ void resetCallback(const std_msgs::Empty& reset_msg)
 // }
 
 /*******************************************************************************
-* Publish msgs (version info)
-*******************************************************************************/
-void publishVersionInfoMsg(void)
-{
-  version_info_msg.hardware = "0.0.0";
-  version_info_msg.software = "0.0.0";
-  version_info_msg.firmware = FIRMWARE_VER;
-}
-
-/*******************************************************************************
 * Update the joint states 
 *******************************************************************************/
 void updateJointStates(void)
@@ -134,12 +134,6 @@ void publishDriveInformation(void)
   updateTF(odom_tf);
 
   tf::TransformBroadcaster tf_broadcaster;
-
-  odom_tf.header.stamp = stamp_now;
-  odom_tf.header.frame_id = "odom";
-  odom_tf.child_frame_id = "base_footprint";
-  odom_tf.transform.translation.x = 1.0;
-  odom_tf.transform.rotation.w = 1.0;
 
     // publishDriveInformation();
 
@@ -198,10 +192,7 @@ void updateOdometry(void)
   odom.pose.pose.position.y = odom_pose[1];
   odom.pose.pose.position.z = 0;
 
-  tf::Quaternion odom_quat = tf::createQuaternionFromYaw(odom_pose[2]);
-  geometry_msgs::Quaternion orientation;
-  tf::quaternionTFToMsg(odom_quat, orientation);
-  odom.pose.pose.orientation = orientation;
+  odom.pose.pose.orientation = callBack_Imu.orientation;
 
   odom.twist.twist.linear.x  = odom_vel[0];
   odom.twist.twist.angular.z = odom_vel[2];
@@ -219,7 +210,9 @@ void updateTF(geometry_msgs::TransformStamped& odom_tf)
   odom_tf.transform.translation.x = odom.pose.pose.position.x;
   odom_tf.transform.translation.y = odom.pose.pose.position.y;
   odom_tf.transform.translation.z = odom.pose.pose.position.z;
-  odom_tf.transform.rotation      = odom.pose.pose.orientation;
+  odom_tf.transform.rotation = callBack_Imu.orientation;
+
+
 }
 
 /*******************************************************************************
@@ -296,6 +289,8 @@ bool calcOdometry(double diff_time)
   theta = WHEEL_RADIUS * (wheel_r - wheel_l) / WHEEL_SEPARATION;  
 
   // orientation = sensors.getOrientation();
+  // theta = getYaw ( 0,0 ,-callBack_Imu.orientation.z,-callBack_Imu.orientation.w);
+
   // theta       = atan2f(orientation[1]*orientation[2] + orientation[0]*orientation[3], 
   //               0.5f - orientation[2]*orientation[2] - orientation[3]*orientation[3]);
 
@@ -334,7 +329,7 @@ void updateVariable(bool isConnected)
     if (variable_flag == false)
     {      
       // sensors.initIMU();
-      // initOdom();
+      initOdom();
 
       variable_flag = true;
     }
@@ -492,9 +487,6 @@ int main(int argc, char **argv)
     // Bumpers, cliffs, buttons, encoders, battery of Service Robot
     ros::Publisher sensor_state_pub = nh.advertise<turtlebot3_msgs::SensorState>("sensor_state", 1000);
 
-    // Version information of Service Robot
-    ros::Publisher version_info_pub = nh.advertise<turtlebot3_msgs::VersionInfo>("firmware_version", 1000); //OK
-
     // Odometry of Service Robot
     ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1000);
 
@@ -519,14 +511,6 @@ int main(int argc, char **argv)
           publishDriveInformation();
           odom_pub.publish(odom);
           tTime[2] = t;
-        }
-
-        if ((t-tTime[4]) >= (1000 /VERSION_INFORMATION_PUBLISH_FREQUENCY))
-        {
-          // Publish version infor
-          publishVersionInfoMsg();
-          version_info_pub.publish(version_info_msg);
-          tTime[4] = t;
         }
 
         sendLogMsg();
